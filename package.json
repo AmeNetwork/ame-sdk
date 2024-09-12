@@ -1,0 +1,33 @@
+{
+  "name": "ame-sdk",
+  "version": "0.1.0",
+  "description": "",
+  "main": "lib/index.js",
+  "module": "src/index.js",
+  "scripts": {
+    "testAmeWeb3": "babel-node testAmeWeb3.js",
+    "testAmeViem": "babel-node testAmeViem.js",
+    "build": "babel src/AmeWeb3.js src/AmeViem.js src/typesArray.js --out-dir lib"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/HelloRickey/ame-sdk.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/HelloRickey/ame-sdk/issues"
+  },
+  "homepage": "https://github.com/HelloRickey/ame-sdk#readme",
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "viem": "^2.21.6",
+    "web3": "^4.7.0"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.24.1",
+    "@babel/core": "^7.24.3",
+    "@babel/node": "^7.23.9",
+    "@babel/preset-env": "^7.24.3"
+  }
+}
