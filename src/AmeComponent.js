@@ -8,10 +8,12 @@ import {
   parseEther,
   http,
   defineChain,
+  decodeEventLog,
 } from "viem";
 
-class AmeViem {
+class AmeComponent {
   constructor(_config, _contract) {
+    this.abi = abi;
     this.contract = _contract;
     this.walletClient = createWalletClient({
       chain: defineChain(_config),
@@ -31,7 +33,12 @@ class AmeViem {
       args: [_methodName, _params],
     });
 
-    return result;
+    var dataType = await this.getMethodReqAndRes(_methodName);
+    var responseDataType = dataType.responseDataType;
+    var decodeResult = this.decodeResponseData(responseDataType, result);
+    return {
+      response: decodeResult,
+    };
   }
 
   async sendPostAndPutRequest(
@@ -52,11 +59,31 @@ class AmeViem {
 
     const hash = await this.walletClient.writeContract(request);
 
-    const transaction = await this.publicClient.waitForTransactionReceipt({
+    const receipt = await this.publicClient.waitForTransactionReceipt({
       hash,
     });
 
-    return transaction;
+    var dataType = await this.getMethodReqAndRes(_methodName);
+    var responseDataType = dataType.responseDataType;
+    var resDataDecode = "";
+    if (responseDataType.length > 0 && receipt.logs.length != 0) {
+      const decodedEvent = decodeEventLog({
+        abi: abi,
+        data: receipt.logs[0].data,
+        topics: receipt.logs[0].topics,
+      });
+
+      resDataDecode = decodeAbiParameters(
+        responseDataType,
+        decodedEvent.args._response
+      );
+    }
+
+    return {
+      txHash: hash,
+      txReceipt: receipt,
+      response: resDataDecode,
+    };
   }
 
   async getComponentOptions() {
@@ -86,12 +113,43 @@ class AmeViem {
       functionName: "getMethodReqAndRes",
       args: [_methodName],
     });
-    dataType[0] = dataType[0].map((num) => typesArray[Number(num)]);
-    dataType[1] = dataType[1].map((num) => typesArray[Number(num)]);
-    return dataType;
+
+    var requestDataTypeParsed = dataType[0].map(
+      (num) => typesArray[Number(num)]
+    );
+    var responseDataTypeParsed = dataType[1].map(
+      (num) => typesArray[Number(num)]
+    );
+
+    var requestDataType = [];
+    var responseDataType = [];
+    for (let item of requestDataTypeParsed) {
+      requestDataType.push({
+        type: item,
+      });
+    }
+
+    for (let item of responseDataTypeParsed) {
+      responseDataType.push({
+        type: item,
+      });
+    }
+
+    return {
+      requestDataType: requestDataType,
+      responseDataType: responseDataType,
+    };
   }
 
-
+  async getMethodInstruction(_methodName) {
+    const methodInstruction = await this.publicClient.readContract({
+      abi,
+      address: this.contract,
+      functionName: "getMethodInstruction",
+      args: [_methodName],
+    });
+    return methodInstruction;
+  }
 
   //Encode request parameters
   encodeRequestParams(_methodRequestParamsType, _requestParamValue) {
@@ -103,4 +161,4 @@ class AmeViem {
     return decodeAbiParameters(_methodResponseType, _resDataEncode);
   }
 }
-export default AmeViem;
+export default AmeComponent;

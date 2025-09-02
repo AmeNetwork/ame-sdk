@@ -44,6 +44,25 @@
 				"type": "string"
 			}
 		],
+		"name": "getMethodInstruction",
+		"outputs": [
+			{
+				"internalType": "string",
+				"name": "",
+				"type": "string"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "string",
+				"name": "_methodName",
+				"type": "string"
+			}
+		],
 		"name": "getMethodReqAndRes",
 		"outputs": [
 			{
