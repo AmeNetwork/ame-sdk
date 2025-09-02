@@ -23,6 +23,4 @@ Run test
 yarn test
 ```
 
-### Example  
-[AmeViem](./testAmeViem.js)  
-[AmeWeb3](./testAmeWeb3.js)
+
