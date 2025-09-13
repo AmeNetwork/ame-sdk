@@ -1,12 +1,12 @@
 {
   "name": "ame-sdk",
   "version": "1.1.1",
-  "description": "Ame SDK",
+  "description": "Ame Javascript SDK",
   "main": "lib/index.js",
   "module": "src/index.js",
   "scripts": {
     "test": "babel-node test.js",
-    "build": "babel src/AmeComponent.js  src/typesArray.js --out-dir lib"
+    "build": "babel src/*.js --out-dir lib && dts-gen -m ame-sdk --file lib/index.d.ts"
   },
   "repository": {
     "type": "git",
@@ -26,7 +26,6 @@
     "@babel/cli": "^7.24.1",
     "@babel/core": "^7.24.3",
     "@babel/node": "^7.23.9",
-    "@babel/preset-env": "^7.24.3",
-    "mocha": "^11.7.2"
+    "@babel/preset-env": "^7.24.3"
   }
 }
